@@ -32,10 +32,10 @@ public class SpringbootRabbitProducer extends Base {
     }
 
     /**
-     * How to check if queue exists
+     * Create queue on the default exchange, if the queue does not exist.
      */
     @Bean
-    CommandLineRunner queueExists() {
+    CommandLineRunner createQueue() {
         return args -> {
             RabbitAdmin ra = new RabbitAdmin(rabbitTemplate);
             Properties prop = ra.getQueueProperties(QUEUE_NAME); 
@@ -53,13 +53,15 @@ public class SpringbootRabbitProducer extends Base {
         };
     }
 
-    /*
-        REST CALL(S)
-    */
+    /**
+     * Send a message to the rabbit queue.
+     * @param msg Message to send (must be JSON)
+     * @return Empty body, OK status code if no errors
+     */
     @PostMapping(path="/msg", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Void> sendMessage(@RequestBody String jsonMsg) {
-        info("received msg to send: {}", jsonMsg);
-        rabbitTemplate.convertAndSend(QUEUE_NAME, jsonMsg);
+    ResponseEntity<Void> sendMessage(@RequestBody String msg) {
+        info("received msg to send: {}", msg);
+        rabbitTemplate.convertAndSend(QUEUE_NAME, msg);
         info("sent msg to rabbit [OK]");
         return ResponseEntity.ok().build();
     }
