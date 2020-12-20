@@ -4,14 +4,14 @@ This repo demonstates how to use Spring Boot with RabbitMQ.
 
 It is a multi-module maven project:
 
-* `springboot-rabbit-consumer`: consumer for messages from rabbit - once received, it and displays the message on the console
+* `springboot-rabbit-consumer`: consumer for messages from rabbit - once message is received, it is displayed on the console
 
 * `springboot-rabbit-producer`: produces messages for rabbit - send messages to rabbit when it receives a POST request
 
 The producer will create a queue (if it does not exist) called `my-springboot-queue` on the default exchange.
 ## How to run examples
 
-### RabbitMQ using Docker
+### RabbitMQ using Dockerds
 
 Install and run:
 
@@ -21,7 +21,7 @@ docker run -d --name my-rabbit rabbitmq:3-management
 
 ### Spring Boot Consumer
 
-Compile and start the consumer service:
+Start the consumer service:
 
 * `cd springboot-rabbit-consumer`
 
@@ -29,7 +29,7 @@ Compile and start the consumer service:
 
 ### Spring Boot Producer
 
-Compile and start the producer service:
+Start the producer service:
 
 * `cd springboot-rabbit-producer`
 
@@ -37,7 +37,7 @@ Compile and start the producer service:
 
 ### Send and Receive Message
 
-To start sending messages, do a POST to the producer. Example:
+To start sending messages, do a POST call to the producer. Example:
 ```
 curl -d '{"msg": "Hello World!"}' -H 'Content-Type: application/json' -X POST http://localhost:8080/msg
 ```
