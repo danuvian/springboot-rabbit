@@ -53,3 +53,13 @@ The **consumer** will log to console:
 [x] Received from 'my-springboot-queue': {"msg": "Hello World!"}
 ```
 
+### Change Rabbit Connection Settings
+
+Change default Spring Boot rabbit connection setting(s) by adding the following value(s) to `application.properties`:
+
+```
+spring.rabbitmq.host=localhost # RabbitMQ host.
+spring.rabbitmq.password= # Login to authenticate against the broker.
+spring.rabbitmq.port=5672 # RabbitMQ port.
+spring.rabbitmq.username= # Login user to authenticate to the broker.
+```
