@@ -41,6 +41,8 @@ The producer creates the following:
 
 * Rabbit exchange: `my-exchange`, queue: `my-exchange-queue`, routing key: `my-routing-key`
 
+The above values can be changed by modifing the producer's `application.properties`. **If these are modified, update the values in the consumer `application.properties` as well so they will listen for the new queues.**
+
 ### Send and Receive Message
 
 You can send messages in the following ways:
