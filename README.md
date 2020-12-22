@@ -11,7 +11,7 @@ It is a multi-module maven project:
 The producer will create a queue (if it does not exist) called `my-springboot-queue` on the default exchange.
 ## How to run examples
 
-### RabbitMQ using Dockerds
+### RabbitMQ using Docker
 
 Install and run:
 
@@ -35,23 +35,36 @@ Start the producer service:
 
 * `mvn spring-boot:run`
 
+The producer creates the following:
+
+* Rabbit standalone queue: `standalone-queue`
+
+* Rabbit exchange: `my-exchange`, queue: `my-exchange-queue`, routing key: `my-routing-key`
+
 ### Send and Receive Message
 
-To start sending messages, do a POST call to the producer. Example:
+You can send messages in the following ways:
+
+* Not specifying the exchange, routing key and queue name. This results in sending the message to the default queue: `standalone-queue`:
 ```
 curl -d '{"msg": "Hello World!"}' -H 'Content-Type: application/json' -X POST http://localhost:8080/msg
 ```
 
-The **producer** will log to console:
+* Specifying the queue name only. This reqults in sending the message to the specified queue:
 ```
-received msg to send: {"msg": "Hello World!"}
-sent msg to rabbit [OK]
+curl -d '{"msg": "Hello World!"}' -H 'Content-Type: application/json' -X POST "http://localhost:8080/msg?queue=standalone-queue"
+or
+curl -d '{"msg": "Hello World!"}' -H 'Content-Type: application/json' -X POST "http://localhost:8080/msg?queue=my-exchange-queue"
 ```
 
-The **consumer** will log to console:
+* Specifying the exchange and the routing key. This results in sending the message to the specified exchange and routing key:
 ```
-[x] Received from 'my-springboot-queue': {"msg": "Hello World!"}
+curl -d '{"msg": "Hello World!"}' -H 'Content-Type: application/json' -X POST "http://localhost:8080/msg?exchange=my-exchange&routingKey=crazy"
 ```
+
+View messages sent in the producer console.
+
+View message received in the consumer console.
 
 ### Change Rabbit Connection Settings
 
