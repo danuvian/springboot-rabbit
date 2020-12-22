@@ -8,12 +8,11 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.messaging.Message;
 
 @SpringBootApplication
-@RabbitListener(queues = {SpringbootRabbitConsumer.QUEUE_NAME})
+@RabbitListener(queues = {"standalone-queue", "my-exchange-queue"})
 public class SpringbootRabbitConsumer extends Base {
-
-    static final String QUEUE_NAME = "my-springboot-queue";
 
     @Autowired
     AmqpTemplate rabbitTemplate;
@@ -25,7 +24,9 @@ public class SpringbootRabbitConsumer extends Base {
     }
 
     @RabbitHandler
-    void receive(String in) {
-        info("[x] Received from '{}': {}", QUEUE_NAME, in);
+    void receive(String in, Message<String> msg) {
+        debug("[x] Received headers = {}", msg.getHeaders());
+
+        info("[x] Received from '{}': {}", msg.getHeaders().get("amqp_consumerQueue"), in);
     }
-}
+} 
