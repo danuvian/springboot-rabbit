@@ -9,6 +9,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,16 +26,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class SpringbootRabbitProducer extends Base {
 
     /** Queue name for default exchange */
-    static final String QUEUE = "standalone-queue";
+    @Value("${QUEUE:standalone-queue}")
+    String QUEUE;
 
     /** Exchange name to be created */
-    static final String EXCHANGE_NAME = "my-exchange";
+    @Value("${EXCHANGE:my-exchange}")
+    String EXCHANGE;
 
     /** Queue name to be created */
-    static final String EXCHANGE_QUEUE_NAME = "my-exchange-queue";
+    @Value("${EXCHANGE_QUEUE:my-exchange-queue}")
+    String EXCHANGE_QUEUE;
 
     /** Exchange-queue routing key */
-    static final String EXCHANGE_QUEUE_ROUTING_KEY = "my-routing-key";
+    @Value("${EXCHANGE_ROUTING_KEY:my-routing-key}")
+    String EXCHANGE_ROUTING_KEY;
 
     @Autowired
     RabbitTemplate rabbitTemplate;
@@ -104,15 +109,15 @@ public class SpringbootRabbitProducer extends Base {
     //
     @Bean
     DirectExchange exchange() {
-        return new DirectExchange(EXCHANGE_NAME);
+        return new DirectExchange(EXCHANGE);
     }
     @Bean
     Queue queue() {
-        return new Queue(EXCHANGE_QUEUE_NAME, false);
+        return new Queue(EXCHANGE_QUEUE, false);
     }
     @Bean 
     Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(EXCHANGE_QUEUE_ROUTING_KEY);
+        return BindingBuilder.bind(queue).to(exchange).with(EXCHANGE_ROUTING_KEY);
     }
 
 
@@ -122,9 +127,10 @@ public class SpringbootRabbitProducer extends Base {
      * @return Empty body, OK status code if no errors
      */
     @PostMapping(path="/msg", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Void> sendMessage(@RequestBody String msg, @RequestParam(required = false) String exchange, 
-        @RequestParam(required = false) String routingKey, @RequestParam(required = false) String queue) throws Exception {
-        info("exchange = {}, routingKey = {}", exchange, routingKey);
+    ResponseEntity<Void> sendMessage(@RequestBody String msg, 
+                                     @RequestParam(required = false) String exchange, 
+                                     @RequestParam(required = false) String routingKey, 
+                                     @RequestParam(required = false) String queue) {
         info("[x] received msg to send: {}", msg);
         if(exchange != null && routingKey != null) { 
             // User specified exchange and routingKey names
