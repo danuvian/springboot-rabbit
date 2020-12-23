@@ -8,7 +8,13 @@ It is a multi-module maven project:
 
 * `springboot-rabbit-producer`: produces messages for rabbit - send messages to rabbit when it receives a POST request
 
-The producer will create a queue (if it does not exist) called `my-springboot-queue` on the default exchange.
+The producer will create:
+
+
+* Queue: `standalone-queue` on the default exchange
+
+* Exchange: `my-exchange`, queue: `my-exchange-queue`, routing key: `my-routing-key`
+
 ## How to run examples
 
 ### RabbitMQ using Docker
@@ -41,6 +47,8 @@ The producer creates the following:
 
 * Rabbit exchange: `my-exchange`, queue: `my-exchange-queue`, routing key: `my-routing-key`
 
+The above values can be modified in the consumer and producer's `application.properties` file.
+
 The above values can be changed by modifing the producer's `application.properties`. **If these are modified, update the values in the consumer `application.properties` as well so they will listen for the new queues.**
 
 ### Send and Receive Message
@@ -61,7 +69,7 @@ curl -d '{"msg": "Hello World!"}' -H 'Content-Type: application/json' -X POST "h
 
 * Specifying the exchange and the routing key. This results in sending the message to the specified exchange and routing key:
 ```
-curl -d '{"msg": "Hello World!"}' -H 'Content-Type: application/json' -X POST "http://localhost:8080/msg?exchange=my-exchange&routingKey=crazy"
+curl -d '{"msg": "Hello World!"}' -H 'Content-Type: application/json' -X POST "http://localhost:8080/msg?exchange=my-exchange&routingKey=my-routing-key"
 ```
 
 View messages sent in the producer console.
